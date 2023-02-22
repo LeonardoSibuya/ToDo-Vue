@@ -1,5 +1,8 @@
 <script setup>
-import { reactive } from 'vue';
+  import { reactive } from 'vue';
+  import Cabecalho from './components/Cabecalho.vue' //ASSIM IMPORTAMOS OS ARQUIVOS .vue PARA O VUE
+  import Formulario from './components/Formulario.vue'
+  import ListaDeTarefas from './components/ListaDeTarefas.vue'
 
 const estado = reactive( { //ARRAY DE OBJETOS
   filtro: 'todas',
@@ -52,42 +55,8 @@ const cadastraTarefa = () => { //AQUI É A FUNÇÃO QUE SERÁ RESPONSÁVEL POR C
 
 <template>
   <div class="container">
-    <header class="p-5 mb-4 mt-4 bg-light roundend-3">
-      <h1>Minhas tarefas</h1>
-      <p>
-        Você possui {{ pegarTarefasPendentes().length }} tarefas pendentes <!--AQUI COLOCAMOS A LENGTH DAS TAREFAS QUE NÃO ESTÃO FINALIZADAS-->
-      </p>
-    </header>
-    <form @submit.prevent="cadastraTarefa"> <!--O .prevent TERÁ O MESMO PAPEL DO PREVENTDEFAULT, QUE NÃO IRÁ REINICIAR O FORMULARIO-->
-    <div class="row">
-      <div class="col">
-        <input :value="estado.tarefaTemporaria" @change="evento => estado.tarefaTemporaria = evento.target.value" type="text" placeholder="Digite a descrição da terafa" class="form-control" required> <!--AQUI SERÁ RESPONSÁVEL POR RECEBER E GUARDAR O VALOR DIGITADO NO INPUT PARA O ITEM TAREFATEMPORARIA-->
-      </div>
-      <div class="col-md-2">
-        <button class="btn btn-primary" type="submit">
-          Cadastrar
-        </button>
-      </div>
-      <div class="col-md-2">
-        <select @change="evento => estado.filtro = evento.target.value" class="form-control">
-          <option value="todas">Todas tarefas</option>
-          <option value="pendentes">Pendentes</option>
-          <option value="finalizadas">Finalizadas</option>
-        </select>
-      </div>
-    </div>
-  </form>
-  <ul class="list-group mt-4">
-    <li class="list-group-item" v-for="tarefa in pegarTarefasFiltradas()"> <!--UTILIZANDO O FOR DO ARRAY DE OBJETOS, COM O ITEM TAREFAS-->
-      <input @change="evento => tarefa.finalizada = evento.target.checked" :checked="tarefa.finalizada" :id="tarefa.titulo" type="checkbox"> <!--UTILIZAMOS O : PARA ACESSAR AS PROPRIEDADES DO JS EM HTML-->
-      <label :class="{done: tarefa.finalizada}" :for="tarefa.titulo" class="ms-3">{{ tarefa.titulo }}</label> <!--O FOR DESTA LINHA É REFERENTE AO LABEL, NÃO FOR DE LOOPING-->
-    </li>
-  </ul>
+    <Cabecalho :tarefas-pendentes="pegarTarefasPendentes().length" /> <!--ASSIM CRIAMOS AS TAGS PERSONALIZADAS, IMPORTANDO VIA ARQUIVOS EXTERNOS QUE CRIAMOS NO COMPONENTS-->
+    <Formulario :tarefa-temporaria="estado.tarefaTemporaria" :edita-tarefa-temporaria="evento => estado.tarefaTemporaria = evento.target.value" :cadastra-tarefa="cadastraTarefa" :trocar-filtro="evento => estado.filtro = evento.target.value"/>
+    <ListaDeTarefas :tarefas="pegarTarefasFiltradas()"/>
   </div>
 </template>
-
-<style scoped>
-  .done {
-    text-decoration: line-through;
-  }
-</style>
